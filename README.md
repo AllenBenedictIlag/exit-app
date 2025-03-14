@@ -10,6 +10,13 @@ A web-based exit interview management system for Electronic Manufacturing Compan
 - Detailed reports on exit trends and reasons
 - Mobile-responsive design
 
+## Recent UI Improvements
+
+- **Enhanced Authentication UI**: Improved login and registration pages with better form validation and user feedback
+- **Intelligent Sidebar Navigation**: Added visual indicators for the active page in the sidebar for better user orientation
+- **User Dropdown Menu**: Consolidated user actions including sign-out into a single dropdown menu for a cleaner header
+- **Auto-expanding Sidebar**: Implemented an auto-collapse/expand sidebar that provides more workspace while maintaining easy access to navigation
+
 ## Tech Stack
 
 - **Frontend**: Next.js with TypeScript
@@ -30,8 +37,8 @@ A web-based exit interview management system for Electronic Manufacturing Compan
 
 1. Clone the repository
    ```
-   git clone https://github.com/yourusername/exit-interview-system.git
-   cd exit-interview-system
+   git clone https://github.com/AllenBenedictIlag/exit-app.git
+   cd exit-app
    ```
 
 2. Install dependencies
