@@ -1,0 +1,21 @@
+.icon {
+  display: inline-block;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.fileIcon {
+  composes: icon;
+  background-image: url('/icons/file.svg');
+}
+
+.globeIcon {
+  composes: icon;
+  background-image: url('/icons/globe.svg');
+}
+
+.windowIcon {
+  composes: icon;
+  background-image: url('/icons/window.svg');
+} 
