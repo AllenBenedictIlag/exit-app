@@ -1,6 +1,6 @@
+'use client';
+
 import React from 'react';
-import Navbar from '@/components/layout/Navbar';
-import Sidebar from '@/components/layout/Sidebar';
 
 export default function AuthLayout({
   children,
@@ -8,13 +8,16 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar />
-      <Sidebar />
-      <div className="pt-16 pl-64">
-        <main className="p-6">
-          {children}
-        </main>
+    <div 
+      className="min-h-screen flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8"
+      style={{
+        backgroundColor: '#f9fafb',
+        backgroundImage: 'radial-gradient(#e5e7eb 1px, transparent 1px)',
+        backgroundSize: '20px 20px'
+      }}
+    >
+      <div className="w-full max-w-md">
+        {children}
       </div>
     </div>
   );

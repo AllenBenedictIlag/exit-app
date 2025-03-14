@@ -1,18 +1,7 @@
-'use client';
-
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { LogOut, User } from 'lucide-react';
 
 const Navbar = () => {
-  const router = useRouter();
-  
-  const handleLogout = () => {
-    // In a real app, you would perform logout operations here
-    // For now, just redirect to the login page
-    router.push('/auth');
-  };
-
   return (
     <nav className="bg-white border-b border-gray-200 fixed z-30 w-full">
       <div className="px-3 py-3 lg:px-5 lg:pl-3">
@@ -32,11 +21,7 @@ const Navbar = () => {
               <button className="p-2 rounded-full hover:bg-gray-100">
                 <User className="w-6 h-6 text-gray-500" />
               </button>
-              <button 
-                onClick={handleLogout}
-                className="p-2 rounded-full hover:bg-gray-100"
-                title="Logout"
-              >
+              <button className="p-2 rounded-full hover:bg-gray-100">
                 <LogOut className="w-6 h-6 text-gray-500" />
               </button>
             </div>

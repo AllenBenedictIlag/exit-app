@@ -77,7 +77,7 @@ module.exports = {
           'card-hover': '0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)',
         },
         animation: {
-          'fadeIn': 'fadeIn 0.5s ease-in-out',
+          'fade-in': 'fadeIn 0.5s ease-in-out',
           'slide-up': 'slideUp 0.5s ease-in-out',
         },
         keyframes: {

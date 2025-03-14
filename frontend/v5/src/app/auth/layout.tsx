@@ -1,14 +1,12 @@
-'use client';
-
 import React from 'react';
-import Navbar from './Navbar';
-import Sidebar from './Sidebar';
+import Navbar from '@/components/layout/Navbar';
+import Sidebar from '@/components/layout/Sidebar';
 
-interface DashboardLayoutProps {
+export default function AuthLayout({
+  children,
+}: {
   children: React.ReactNode;
-}
-
-const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
+}) {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
@@ -20,6 +18,4 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       </div>
     </div>
   );
-};
-
-export default DashboardLayout;
+}
