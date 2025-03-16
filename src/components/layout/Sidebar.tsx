@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Users, FileText, BarChart2, Settings, ChevronLeft, ChevronRight, Menu } from 'lucide-react';
-import { ReactNode, useState, useEffect } from 'react';
+import { Home, Users, FileText, BarChart2, Settings } from 'lucide-react';
+import { ReactNode } from 'react';
 
 // Create a context to share the sidebar state
 import { createContext, useContext } from 'react';
@@ -15,6 +15,8 @@ export const SidebarContext = createContext({
   toggleCollapsed: () => {},
   isHovering: false,
   setIsHovering: (isHovering: boolean) => {},
+  keepExpanded: true,
+  setKeepExpanded: (keepExpanded: boolean) => {},
 });
 
 // Custom hook to use the sidebar context
@@ -25,8 +27,6 @@ interface NavigationLinkProps {
   icon: ReactNode;
   label: string;
   isActive: boolean;
-  collapsed: boolean;
-  isHovering: boolean;
   className?: string;
 }
 
@@ -35,48 +35,61 @@ const NavigationLink = ({
   icon, 
   label, 
   isActive, 
-  collapsed,
-  isHovering,
-  className = "" 
+  className = ""
 }: NavigationLinkProps) => {
+  
   return (
     <li className="relative group">
-      {/* Active indicator - hide when sidebar is collapsed and not hovering */}
+      {/* Active indicator */}
       <div 
         className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-blue-600 rounded-r transition-all duration-300 ${
-          isActive ? (collapsed && !isHovering ? 'opacity-0' : 'opacity-100') : 'opacity-0 group-hover:opacity-50'
+          isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-50'
         }`}
       ></div>
       
       <Link 
         href={href} 
-        className={`flex items-center ${collapsed && !isHovering ? 'justify-center py-2.5 px-0' : 'p-2 pl-3'} 
+        className={`flex items-center p-3 pl-3 
           text-base font-normal rounded-lg transition-all duration-300 ease-in-out
           ${isActive 
-            ? (collapsed && !isHovering ? 'text-blue-600' : 'bg-blue-50 text-blue-600 font-medium')
+            ? 'bg-blue-50 text-blue-600 font-medium'
             : 'text-gray-700 hover:bg-gray-100'
-          } ${className} ${collapsed && !isHovering ? '' : 'group-hover:translate-x-1'}`}
-        title={collapsed && !isHovering ? label : ''}
+          } ${className} group-hover:translate-x-1`}
+        title={label}
       >
-        <div className={`flex items-center justify-center ${collapsed && !isHovering ? 'w-full mx-auto' : 'min-w-[24px]'} transition-all duration-300`}>
+        <div className="flex items-center justify-center min-w-[24px] transition-all duration-300">
           {icon}
         </div>
         
-        <span 
-          className={`ml-3 whitespace-nowrap transition-all duration-300 ${
-            collapsed && !isHovering ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100 w-auto'
-          }`}
-        >
+        <div className="ml-3 whitespace-nowrap overflow-hidden transition-all duration-300 w-auto opacity-100">
           {label}
-        </span>
+        </div>
       </Link>
     </li>
   );
 };
 
+// Section divider component
+const SectionDivider = ({ 
+  label
+}: { 
+  label: string
+}) => {
+  return (
+    <div className="mt-6 mb-2">
+      <div className="flex items-center px-3">
+        <div className="h-px bg-gray-200 flex-grow"></div>
+        <span className="px-2 text-xs font-medium text-gray-500 uppercase">
+          {label}
+        </span>
+        <div className="h-px bg-gray-200 flex-grow"></div>
+      </div>
+    </div>
+  );
+};
+
 const Sidebar = () => {
   const pathname = usePathname();
-  const { collapsed, setCollapsed, toggleCollapsed, isHovering, setIsHovering } = useSidebar();
   
   // Function to check if a path is active or if we're on a subpage of that path
   const isActivePath = (path: string) => {
@@ -86,65 +99,50 @@ const Sidebar = () => {
     return pathname.startsWith(path);
   };
 
-  // Navigation items configuration
-  const navigationItems = [
-    {
-      href: '/dashboard',
-      label: 'Dashboard',
-      icon: <Home className={`transition duration-200 ${
-        isActivePath('/dashboard') ? 'text-blue-600' : 'text-gray-500'
-      }`} />,
-      isActive: isActivePath('/dashboard'),
-    },
-    {
-      href: '/exit-interviews',
-      label: 'Exit Interviews',
-      icon: <FileText className={`transition duration-200 ${
-        isActivePath('/exit-interviews') ? 'text-blue-600' : 'text-gray-500'
-      }`} />,
-      isActive: isActivePath('/exit-interviews'),
-    },
-    {
-      href: '/reports',
-      label: 'Reports',
-      icon: <BarChart2 className={`transition duration-200 ${
-        isActivePath('/reports') ? 'text-blue-600' : 'text-gray-500'
-      }`} />,
-      isActive: isActivePath('/reports'),
-    },
-    {
-      href: '/admin',
-      label: 'Admin',
-      icon: <Users className={`transition duration-200 ${
-        isActivePath('/admin') && pathname !== '/admin/settings' ? 'text-blue-600' : 'text-gray-500'
-      }`} />,
-      isActive: isActivePath('/admin') && pathname !== '/admin/settings',
-    },
-  ];
-
   return (
-    <aside 
-      className={`fixed h-screen bg-white border-r border-gray-200 pt-16 transition-all duration-300 ease-in-out z-20 shadow-md ${
-        collapsed && !isHovering ? 'w-[60px]' : 'w-64'
-      }`}
-    >
-      <div className={`overflow-y-auto ${collapsed && !isHovering ? 'px-0' : 'px-3'} py-6 h-full relative`}>
-        
-        <ul className={`space-y-1.5 ${collapsed && !isHovering ? 'px-0' : ''} mt-2`}>
-          {navigationItems.map((item) => (
-            <NavigationLink
-              key={item.href}
-              href={item.href}
-              icon={item.icon}
-              label={item.label}
-              isActive={item.isActive}
-              collapsed={collapsed}
-              isHovering={isHovering}
-            />
-          ))}
+    <aside className="fixed h-screen bg-white border-r border-gray-200 pt-16 transition-all duration-300 ease-in-out z-20 shadow-md w-64">
+      <div className="overflow-y-auto px-3 py-6 h-full relative">
+        <ul className="space-y-1.5 mt-2">
+          {/* Main navigation section */}
+          <NavigationLink
+            href="/dashboard"
+            icon={<Home className={`transition duration-200 ${
+              isActivePath('/dashboard') ? 'text-blue-600' : 'text-gray-500'
+            }`} />}
+            label="Dashboard"
+            isActive={isActivePath('/dashboard')}
+          />
+          <NavigationLink
+            href="/exit-interviews"
+            icon={<FileText className={`transition duration-200 ${
+              isActivePath('/exit-interviews') ? 'text-blue-600' : 'text-gray-500'
+            }`} />}
+            label="Exit Interviews"
+            isActive={isActivePath('/exit-interviews')}
+          />
+          <NavigationLink
+            href="/reports"
+            icon={<BarChart2 className={`transition duration-200 ${
+              isActivePath('/reports') ? 'text-blue-600' : 'text-gray-500'
+            }`} />}
+            label="Reports"
+            isActive={isActivePath('/reports')}
+          />
           
-          <li className="border-t border-gray-200 my-4"></li>
+          {/* Administration section divider */}
+          <li>
+            <SectionDivider label="Administration" />
+          </li>
           
+          {/* Administration items */}
+          <NavigationLink
+            href="/admin"
+            icon={<Users className={`transition duration-200 ${
+              isActivePath('/admin') && pathname !== '/admin/settings' ? 'text-blue-600' : 'text-gray-500'
+            }`} />}
+            label="Admin"
+            isActive={isActivePath('/admin') && pathname !== '/admin/settings'}
+          />
           <NavigationLink
             href="/admin/settings"
             icon={<Settings className={`transition duration-200 ${
@@ -152,8 +150,6 @@ const Sidebar = () => {
             }`} />}
             label="Settings"
             isActive={pathname === '/admin/settings'}
-            collapsed={collapsed}
-            isHovering={isHovering}
           />
         </ul>
       </div>

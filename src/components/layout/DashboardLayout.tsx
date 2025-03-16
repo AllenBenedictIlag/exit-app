@@ -4,28 +4,41 @@ import React, { useEffect, useState } from 'react';
 import Navbar from './Navbar';
 import Sidebar, { useSidebar, SidebarContext } from './Sidebar';
 import { Menu } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
-  // Default to collapsed on desktop for a cleaner look
-  const [collapsed, setCollapsed] = React.useState(true);
+  const pathname = usePathname();
+  
+  // Default to not collapsed since we're keeping the sidebar expanded permanently
+  const [collapsed, setCollapsed] = React.useState(false);
   const [isHovering, setIsHovering] = React.useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [previousPath, setPreviousPath] = useState('');
+  
+  // Track path changes to manage sidebar state during navigation
+  useEffect(() => {
+    // Store the current expanded state in session storage when navigating
+    if (previousPath && previousPath !== pathname) {
+      if (!collapsed || isHovering) {
+        // Don't collapse the sidebar when navigating between pages
+        setCollapsed(false);
+      }
+    }
+    
+    // Update previous path
+    setPreviousPath(pathname);
+  }, [pathname, collapsed, isHovering]);
   
   // Check viewport size on mount and when resized
   useEffect(() => {
     const checkScreenSize = () => {
       const mobile = window.innerWidth < 1024;
       setIsMobile(mobile);
-      
-      // Always collapse on small screens
-      if (mobile && !collapsed) {
-        setCollapsed(true);
-      }
     };
     
     // Check on initial render
@@ -36,48 +49,42 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     
     // Clean up
     return () => window.removeEventListener('resize', checkScreenSize);
-  }, [collapsed]);
-  
-  // Check localStorage for saved preference on first render, but only use it if it's explicitly set
-  // This allows our default collapsed state to take precedence when no preference is set
-  React.useEffect(() => {
-    const savedCollapsed = localStorage.getItem('sidebarCollapsed');
-    if (savedCollapsed !== null) {
-      setCollapsed(savedCollapsed === 'true');
-    }
   }, []);
   
-  // Save preference to localStorage when explicitly changed
-  React.useEffect(() => {
-    localStorage.setItem('sidebarCollapsed', String(collapsed));
-  }, [collapsed]);
-  
-  // Toggle collapsed state (used only for mobile now)
-  const toggleCollapsed = () => {
-    setCollapsed(!collapsed);
-  };
-
   // Toggle sidebar visibility on mobile
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
   
-  // Handle hover state changes which will auto-expand the sidebar
+  // Handle hover state changes
   const handleMouseEnter = () => {
     setIsHovering(true);
+    // When user hovers over the sidebar, keep it expanded
+    setCollapsed(false);
   };
   
   const handleMouseLeave = () => {
     setIsHovering(false);
+    
+    // Check if we're in Admin section - we'll keep behavior consistent for all sections
+    // We'll only auto-collapse if we're not actively navigating
+    if (previousPath === pathname) {
+      setCollapsed(true);
+    }
   };
+  
+  // Determine if sidebar should be expanded
+  const shouldExpandSidebar = isHovering || !collapsed;
   
   return (
     <SidebarContext.Provider value={{ 
-      collapsed, 
-      setCollapsed, 
-      toggleCollapsed,
-      isHovering,
-      setIsHovering
+      collapsed: false, 
+      setCollapsed: () => {}, 
+      toggleCollapsed: () => {},
+      isHovering: false,
+      setIsHovering: () => {},
+      keepExpanded: true,
+      setKeepExpanded: () => {}
     }}>
       <div className="min-h-screen bg-gray-50">
         <Navbar>
@@ -100,19 +107,15 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           />
         )}
         
-        {/* Conditional rendering for mobile */}
-        <div 
-          className={`${isMobile && !sidebarOpen ? 'hidden' : 'block'}`}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
+        {/* Sidebar container - always visible on desktop */}
+        <div className={`sidebar-container ${isMobile && !sidebarOpen ? 'hidden' : 'block'}`}>
           <Sidebar />
         </div>
         
         <div className={`transition-all duration-300 ease-in-out pt-16 ${
           isMobile 
-            ? (sidebarOpen ? 'pl-[60px] lg:pl-[60px]' : 'pl-0') 
-            : (collapsed && !isHovering ? 'pl-[60px]' : 'pl-64')
+            ? (sidebarOpen ? 'pl-[60px] lg:pl-64' : 'pl-0') 
+            : 'pl-64'
         }`}>
           <main className="p-6">
             {children}
