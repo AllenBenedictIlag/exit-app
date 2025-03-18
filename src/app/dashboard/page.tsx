@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import ExitTrendChart from '@/components/charts/ExitTrendChart';
 import ExitReasonsPieChart from '@/components/charts/ExitReasonsPieChart';
 import { UserPlus, Users, UserMinus, Calendar } from 'lucide-react';
@@ -24,9 +25,42 @@ const StatCard = ({ title, value, icon: Icon, color }: {
 };
 
 export default function Dashboard() {
+  const [timePeriod, setTimePeriod] = useState('T128');
+  
+  // Time period mapping object - for display purposes
+  const timePeriodLabels = {
+    'T123': 'April 2020 - 2021',
+    'T124': 'April 2021 - 2022',
+    'T125': 'April 2022 - 2023',
+    'T126': 'April 2023 - 2024',
+    'T127': 'April 2024 - 2025',
+    'T128': 'April 2025 - 2026',
+  };
+  
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Dashboard</h1>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <h1 className="text-2xl font-bold">Dashboard</h1>
+        
+        <div className="flex items-center">
+          <div className="w-48">
+            <select
+              id="time-period"
+              className="block w-full rounded-md border-gray-300 shadow-sm hover:border-blue-300 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 transition-colors duration-200 text-gray-700 sm:text-sm"
+              value={timePeriod}
+              onChange={(e) => setTimePeriod(e.target.value)}
+              style={{ outline: 'none' }}
+            >
+              <option value="T123">T123</option>
+              <option value="T124">T124</option>
+              <option value="T125">T125</option>
+              <option value="T126">T126</option>
+              <option value="T127">T127</option>
+              <option value="T128">T128</option>
+            </select>
+          </div>
+        </div>
+      </div>
       
       {/* Stats Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
