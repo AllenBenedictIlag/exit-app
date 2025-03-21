@@ -101,57 +101,63 @@ const Sidebar = () => {
 
   return (
     <aside className="fixed h-screen bg-white border-r border-gray-200 pt-16 transition-all duration-300 ease-in-out z-20 shadow-md w-64">
-      <div className="overflow-y-auto px-3 py-6 h-full relative">
-        <ul className="space-y-1.5 mt-2">
-          {/* Main navigation section */}
-          <NavigationLink
-            href="/dashboard"
-            icon={<Home className={`transition duration-200 ${
-              isActivePath('/dashboard') ? 'text-blue-600' : 'text-gray-500'
-            }`} />}
-            label="Dashboard"
-            isActive={isActivePath('/dashboard')}
-          />
-          <NavigationLink
-            href="/exit-interviews"
-            icon={<FileText className={`transition duration-200 ${
-              isActivePath('/exit-interviews') ? 'text-blue-600' : 'text-gray-500'
-            }`} />}
-            label="Exit Interviews"
-            isActive={isActivePath('/exit-interviews')}
-          />
-          <NavigationLink
-            href="/reports"
-            icon={<BarChart2 className={`transition duration-200 ${
-              isActivePath('/reports') ? 'text-blue-600' : 'text-gray-500'
-            }`} />}
-            label="Reports"
-            isActive={isActivePath('/reports')}
-          />
-          
-          {/* Administration section divider */}
-          <li>
-            <SectionDivider label="Administration" />
-          </li>
-          
-          {/* Administration items */}
-          <NavigationLink
-            href="/admin"
-            icon={<Users className={`transition duration-200 ${
-              isActivePath('/admin') && pathname !== '/admin/settings' ? 'text-blue-600' : 'text-gray-500'
-            }`} />}
-            label="Admin"
-            isActive={isActivePath('/admin') && pathname !== '/admin/settings'}
-          />
-          <NavigationLink
-            href="/admin/settings"
-            icon={<Settings className={`transition duration-200 ${
-              pathname === '/admin/settings' ? 'text-blue-600' : 'text-gray-500'
-            }`} />}
-            label="Settings"
-            isActive={pathname === '/admin/settings'}
-          />
-        </ul>
+      <div className="overflow-y-auto px-3 py-6 h-full flex flex-col">
+        {/* Main navigation section */}
+        <div className="flex-grow">
+          <ul className="space-y-1.5 mt-2">
+            <NavigationLink
+              href="/dashboard"
+              icon={<Home className={`transition duration-200 ${
+                isActivePath('/dashboard') ? 'text-blue-600' : 'text-gray-500'
+              }`} />}
+              label="Dashboard"
+              isActive={isActivePath('/dashboard')}
+            />
+            <NavigationLink
+              href="/exit-interviews"
+              icon={<FileText className={`transition duration-200 ${
+                isActivePath('/exit-interviews') ? 'text-blue-600' : 'text-gray-500'
+              }`} />}
+              label="Exit Interviews"
+              isActive={isActivePath('/exit-interviews')}
+            />
+            <NavigationLink
+              href="/reports"
+              icon={<BarChart2 className={`transition duration-200 ${
+                isActivePath('/reports') ? 'text-blue-600' : 'text-gray-500'
+              }`} />}
+              label="Reports"
+              isActive={isActivePath('/reports')}
+            />
+          </ul>
+        </div>
+        
+        {/* Administration section at the bottom */}
+        <div className="mt-auto pt-4 border-t border-gray-200">
+          <div className="flex items-center px-3 mb-2">
+            <span className="text-xs font-medium text-gray-500 uppercase">
+              Administration
+            </span>
+          </div>
+          <ul className="space-y-1.5">
+            <NavigationLink
+              href="/admin"
+              icon={<Users className={`transition duration-200 ${
+                isActivePath('/admin') && pathname !== '/admin/settings' ? 'text-blue-600' : 'text-gray-500'
+              }`} />}
+              label="Admin"
+              isActive={isActivePath('/admin') && pathname !== '/admin/settings'}
+            />
+            <NavigationLink
+              href="/admin/settings"
+              icon={<Settings className={`transition duration-200 ${
+                pathname === '/admin/settings' ? 'text-blue-600' : 'text-gray-500'
+              }`} />}
+              label="Settings"
+              isActive={pathname === '/admin/settings'}
+            />
+          </ul>
+        </div>
       </div>
     </aside>
   );
