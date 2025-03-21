@@ -4,6 +4,9 @@ import { useState } from 'react';
 import ExitReasonsPieChart from '@/components/charts/ExitReasonsPieChart';
 import DepartmentExitChart from '@/components/charts/DepartmentExitChart';
 import TrendLineChart from '@/components/charts/TrendLineChart';
+import ExitsByBusinessUnit from '@/components/charts/ExitsByBusinessUnit';
+import RecommendationRatings from '@/components/charts/RecommendationRatings';
+import WorkloadPerception from '@/components/charts/WorkloadPerception';
 import { Download, Filter } from 'lucide-react';
 
 export default function ReportsPage() {
@@ -87,6 +90,18 @@ export default function ReportsPage() {
         </div>
       </div>
       
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="card p-6">
+          <ExitsByBusinessUnit />
+        </div>
+        <div className="card p-6">
+          <RecommendationRatings />
+        </div>
+        <div className="card p-6">
+          <WorkloadPerception />
+        </div>
+      </div>
+
       <div className="card p-6">
         <TrendLineChart />
       </div>
