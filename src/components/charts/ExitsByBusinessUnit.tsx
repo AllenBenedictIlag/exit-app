@@ -6,9 +6,9 @@ import {
   XAxis, 
   YAxis, 
   CartesianGrid, 
-  Tooltip, 
-  Legend, 
-  ResponsiveContainer 
+  Tooltip,
+  ResponsiveContainer,
+  LabelList
 } from 'recharts';
 
 // Mock data for exits by Business Unit
@@ -32,14 +32,14 @@ const ExitsByBusinessUnit = () => {
           <BarChart
             data={data}
             margin={{
-              top: 5,
+              top: 10,
               right: 30,
               left: 20,
               bottom: 60,
             }}
             barSize={36}
           >
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} />
             <XAxis 
               dataKey="businessUnit" 
               angle={-45} 
@@ -48,13 +48,29 @@ const ExitsByBusinessUnit = () => {
               tick={{ fontSize: 12 }}
               interval={0}
             />
-            <YAxis tick={{ fontSize: 12 }} />
-            <Tooltip 
-              contentStyle={{ fontSize: '12px' }} 
-              formatter={(value) => [`${value} exits`, 'Count']}
+            <YAxis 
+              tick={{ fontSize: 12 }} 
+              tickCount={6}
+              domain={[0, 'auto']}
             />
-            <Legend wrapperStyle={{ fontSize: '12px', marginTop: '10px' }} />
-            <Bar dataKey="count" name="Number of Exits" fill="#8884d8" radius={[4, 4, 0, 0]} />
+            <Tooltip 
+              contentStyle={{ fontSize: '12px', borderRadius: '4px' }} 
+              formatter={(value, name, props) => [`${value} interviews`, props.payload.businessUnit]}
+              labelFormatter={() => ''}
+            />
+            <Bar 
+              dataKey="count" 
+              fill="#8884d8" 
+              radius={[4, 4, 0, 0]}
+            >
+              <LabelList 
+                dataKey="count" 
+                position="top" 
+                fill="#666" 
+                fontSize={11} 
+                offset={5}
+              />
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
       </div>
