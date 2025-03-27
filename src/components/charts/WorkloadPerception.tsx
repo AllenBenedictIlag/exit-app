@@ -1,80 +1,91 @@
 'use client';
 
-import { 
-  RadarChart, 
-  PolarGrid, 
-  PolarAngleAxis, 
-  PolarRadiusAxis, 
-  Radar, 
-  Tooltip, 
-  Legend, 
-  ResponsiveContainer 
-} from 'recharts';
+import { useEffect, useState } from 'react';
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend
+} from 'chart.js';
+import { Pie } from 'react-chartjs-2';
 
-// Mock data for workload perception
-const data = [
-  { subject: 'Too Heavy', A: 70, B: 55, fullMark: 100 },
-  { subject: 'Somewhat Heavy', A: 85, B: 65, fullMark: 100 },
-  { subject: 'Just Right', A: 50, B: 78, fullMark: 100 },
-  { subject: 'Somewhat Light', A: 25, B: 40, fullMark: 100 },
-  { subject: 'Too Light', A: 10, B: 15, fullMark: 100 },
-];
+// Register Chart.js components
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend
+);
 
-const WorkloadPerception = () => {
+export default function WorkloadPerception() {
+  // State to ensure client-side rendering only
+  const [mounted, setMounted] = useState(false);
+
+  // Chart.js options
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'bottom' as const,
+      },
+      tooltip: {
+        callbacks: {
+          label: function(context: any) {
+            let label = context.label || '';
+            let value = context.raw || 0;
+            let total = context.dataset.data.reduce((a: number, b: number) => a + b, 0);
+            let percentage = Math.round((value / total) * 100);
+            return `${label}: ${value} employees (${percentage}%)`;
+          }
+        }
+      }
+    },
+  };
+
+  // From the data provided, count the workload perceptions
+  const data = {
+    labels: ['Too much work', 'Just enough load', 'Minimal work'],
+    datasets: [
+      {
+        data: [9, 9, 3],
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.6)',
+          'rgba(54, 162, 235, 0.6)',
+          'rgba(75, 192, 192, 0.6)',
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(75, 192, 192, 1)',
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  // Use effect to ensure client-side rendering only
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="w-full">
+        <h3 className="text-lg font-medium">Workload Perception</h3>
+        <div className="mt-4 h-80 flex items-center justify-center bg-gray-50 rounded">
+          <p className="text-gray-400">Loading chart...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="h-80 w-full">
-      <h3 className="text-lg font-medium mb-2">Perception of Workload</h3>
-      <p className="text-sm text-gray-500 mb-4">
-        Employees' thoughts about the amount of work at Company Corp
-      </p>
-      <div className="h-64">
-        <ResponsiveContainer width="100%" height="100%">
-          <RadarChart 
-            cx="50%" 
-            cy="50%" 
-            outerRadius="70%" 
-            data={data}
-            margin={{
-              top: 5,
-              right: 30,
-              left: 20,
-              bottom: 5,
-            }}
-          >
-            <PolarGrid stroke="#e0e0e0" />
-            <PolarAngleAxis 
-              dataKey="subject" 
-              tick={{ fill: '#666', fontSize: 12 }}
-            />
-            <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fontSize: 10 }} />
-            <Tooltip 
-              contentStyle={{ fontSize: '12px' }}
-              formatter={(value) => [`${value}%`, '']}
-            />
-            <Legend 
-              wrapperStyle={{ fontSize: '12px', marginTop: '10px' }}
-              align="center"
-              verticalAlign="bottom"
-            />
-            <Radar
-              name="Previous Year"
-              dataKey="A"
-              stroke="#8884d8"
-              fill="#8884d8"
-              fillOpacity={0.5}
-            />
-            <Radar
-              name="Current Year"
-              dataKey="B"
-              stroke="#82ca9d"
-              fill="#82ca9d"
-              fillOpacity={0.5}
-            />
-          </RadarChart>
-        </ResponsiveContainer>
+    <div className="w-full">
+      <h3 className="text-lg font-medium">Workload Perception</h3>
+      <p className="text-sm text-gray-500">How did you feel about the amount of work you were expected to do?</p>
+      <div className="mt-4 h-72" style={{ position: 'relative' }}>
+        <Pie options={options} data={data} />
       </div>
     </div>
   );
-};
-
-export default WorkloadPerception; 
+} 

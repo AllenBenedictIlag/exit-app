@@ -1,13 +1,16 @@
 'use client';
 
-import { useState } from 'react';
-import ExitTrendChart from '@/components/charts/ExitTrendChart';
-import ExitReasonsPieChart from '@/components/charts/ExitReasonsPieChart';
+import React, { useState, useEffect } from 'react';
+import TimePeriodSelector from '../../components/TimePeriodSelector';
+import DepartmentExitChart from '../../components/charts/DepartmentExitChart';
+import ExitReasonsPieChart from '../../components/charts/ExitReasonsPieChart';
+import ExitTrendChart from '../../components/charts/ExitTrendChart';
 import { UserPlus, Users, UserMinus, Calendar } from 'lucide-react';
+import { getDataForPeriod } from '../../utils/dataGenerator';
 
 const StatCard = ({ title, value, icon: Icon, color }: { 
   title: string; 
-  value: string; 
+  value: string | number; 
   icon: React.ElementType; 
   color: string 
 }) => {
@@ -25,17 +28,19 @@ const StatCard = ({ title, value, icon: Icon, color }: {
 };
 
 export default function Dashboard() {
-  const [timePeriod, setTimePeriod] = useState('T128');
+  const [selectedPeriod, setSelectedPeriod] = useState('T127');
+  const [dashboardData, setDashboardData] = useState(getDataForPeriod('T127'));
   
-  // Time period mapping object - for display purposes
-  const timePeriodLabels = {
-    'T123': 'April 2020 - 2021',
-    'T124': 'April 2021 - 2022',
-    'T125': 'April 2022 - 2023',
-    'T126': 'April 2023 - 2024',
-    'T127': 'April 2024 - 2025',
-    'T128': 'April 2025 - 2026',
+  // Handle period change from selector
+  const handlePeriodChange = (period: string) => {
+    console.log('Period changed to:', period);
+    setSelectedPeriod(period);
+    const data = getDataForPeriod(period);
+    console.log('Loading data for period:', period, data);
+    setDashboardData(data);
   };
+  
+  if (!dashboardData) return <div>Loading...</div>;
   
   return (
     <div className="space-y-6">
@@ -43,22 +48,10 @@ export default function Dashboard() {
         <h1 className="text-2xl font-bold">Dashboard</h1>
         
         <div className="flex items-center">
-          <div className="w-48">
-            <select
-              id="time-period"
-              className="block w-full rounded-md border-gray-300 shadow-sm hover:border-blue-300 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 transition-colors duration-200 text-gray-700 sm:text-sm"
-              value={timePeriod}
-              onChange={(e) => setTimePeriod(e.target.value)}
-              style={{ outline: 'none' }}
-            >
-              <option value="T123">T123</option>
-              <option value="T124">T124</option>
-              <option value="T125">T125</option>
-              <option value="T126">T126</option>
-              <option value="T127">T127</option>
-              <option value="T128">T128</option>
-            </select>
-          </div>
+          <TimePeriodSelector 
+            selectedPeriod={selectedPeriod}
+            onPeriodChange={handlePeriodChange}
+          />
         </div>
       </div>
       
@@ -66,25 +59,25 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard 
           title="Total Employees" 
-          value="1,284" 
+          value={dashboardData.totalEmployees} 
           icon={Users} 
           color="bg-blue-500" 
         />
         <StatCard 
           title="New Hires (This Month)" 
-          value="24" 
+          value={dashboardData.newHires} 
           icon={UserPlus} 
           color="bg-green-500" 
         />
         <StatCard 
           title="Exits (This Month)" 
-          value="18" 
+          value={dashboardData.exits} 
           icon={UserMinus} 
           color="bg-red-500" 
         />
         <StatCard 
           title="Pending Exit Interviews" 
-          value="7" 
+          value={dashboardData.pendingInterviews} 
           icon={Calendar} 
           color="bg-amber-500" 
         />
@@ -93,10 +86,21 @@ export default function Dashboard() {
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="card">
-          <ExitTrendChart />
+          <div className="mb-2 text-sm text-gray-500">
+            <span className="font-medium">Note:</span> This chart displays exit trends for the selected time period ({selectedPeriod}).
+            Try changing the time period selector above to see how the data changes.
+          </div>
+          <ExitTrendChart period={selectedPeriod} key={`trend-${selectedPeriod}`} />
         </div>
         <div className="card">
-          <ExitReasonsPieChart />
+          <ExitReasonsPieChart data={dashboardData.exitReasons} key={`reasons-${selectedPeriod}`} />
+        </div>
+      </div>
+      
+      {/* Additional Charts Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
+        <div className="card">
+          <DepartmentExitChart data={dashboardData.departmentExits} key={`dept-${selectedPeriod}`} />
         </div>
       </div>
       

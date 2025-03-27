@@ -1,88 +1,92 @@
 'use client';
 
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend, 
-  ResponsiveContainer,
-  Cell,
-  LabelList
-} from 'recharts';
+import { useEffect, useState } from 'react';
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend
+} from 'chart.js';
+import { Doughnut } from 'react-chartjs-2';
 
-// Mock data for recommendation ratings
-const data = [
-  { rating: 'Definitely Yes', count: 32, percentage: 21 },
-  { rating: 'Probably Yes', count: 48, percentage: 32 },
-  { rating: 'Not Sure', count: 27, percentage: 18 },
-  { rating: 'Probably Not', count: 25, percentage: 17 },
-  { rating: 'Definitely Not', count: 18, percentage: 12 }
-];
+// Register Chart.js components
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend
+);
 
-// Custom colors for the different ratings
-const COLORS = ['#4CAF50', '#8BC34A', '#FFC107', '#FF9800', '#F44336'];
+export default function RecommendationRatings() {
+  // State to ensure client-side rendering only
+  const [mounted, setMounted] = useState(false);
 
-const RecommendationRatings = () => {
+  // Chart.js options
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'bottom' as const,
+      },
+      tooltip: {
+        callbacks: {
+          label: function(context: any) {
+            let label = context.label || '';
+            let value = context.raw || 0;
+            let total = context.dataset.data.reduce((a: number, b: number) => a + b, 0);
+            let percentage = Math.round((value / total) * 100);
+            return `${label}: ${value} (${percentage}%)`;
+          }
+        }
+      }
+    },
+  };
+
+  // From the data provided, count the yes/no recommendations
+  const yesCount = 15; // Yes, would recommend TDK
+  const noCount = 5;   // No, would not recommend TDK
+
+  const data = {
+    labels: ['Would Recommend', 'Would Not Recommend'],
+    datasets: [
+      {
+        data: [yesCount, noCount],
+        backgroundColor: [
+          'rgba(75, 192, 192, 0.6)',
+          'rgba(255, 99, 132, 0.6)',
+        ],
+        borderColor: [
+          'rgba(75, 192, 192, 1)',
+          'rgba(255, 99, 132, 1)',
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  // Use effect to ensure client-side rendering only
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="w-full">
+        <h3 className="text-lg font-medium">Recommendation Ratings</h3>
+        <div className="mt-4 h-80 flex items-center justify-center bg-gray-50 rounded">
+          <p className="text-gray-400">Loading chart...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="h-80 w-full">
-      <h3 className="text-lg font-medium mb-2">Would You Recommend Company Corp to a Friend?</h3>
-      <p className="text-sm text-gray-500 mb-4">Distribution of employee recommendations in exit interviews</p>
-      <div className="h-64">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart
-            data={data}
-            margin={{
-              top: 5,
-              right: 30,
-              left: 20,
-              bottom: 5,
-            }}
-            layout="vertical"
-            barSize={24}
-          >
-            <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
-            <XAxis 
-              type="number" 
-              tick={{ fontSize: 12 }}
-              domain={[0, 'dataMax + 5']}
-            />
-            <YAxis 
-              dataKey="rating" 
-              type="category" 
-              width={110} 
-              tick={{ fontSize: 12 }}
-              tickMargin={5}
-            />
-            <Tooltip 
-              formatter={(value, name) => [value + '%', name === 'percentage' ? 'Percentage' : 'Count']}
-              contentStyle={{ fontSize: '12px' }}
-            />
-            <Legend 
-              wrapperStyle={{ fontSize: '12px', marginTop: '10px' }}
-            />
-            <Bar 
-              dataKey="percentage" 
-              name="Percentage (%)" 
-              radius={[0, 4, 4, 0]}
-            >
-              {data.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index]} />
-              ))}
-              <LabelList 
-                dataKey="percentage" 
-                position="right" 
-                formatter={(value) => `${value}%`}
-                style={{ fontSize: '11px', fill: '#666' }}
-              />
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
+    <div className="w-full">
+      <h3 className="text-lg font-medium">Recommendation Ratings</h3>
+      <p className="text-sm text-gray-500">Would you recommend TDK to a friend as a place to work?</p>
+      <div className="mt-4 h-72" style={{ position: 'relative' }}>
+        <Doughnut options={options} data={data} />
       </div>
     </div>
   );
-};
-
-export default RecommendationRatings; 
+} 

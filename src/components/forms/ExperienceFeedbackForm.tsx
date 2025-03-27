@@ -9,14 +9,6 @@ interface ExperienceFeedbackFormProps {
   onChange: (data: any) => void;
 }
 
-const ratingOptions = [
-  { value: 5, label: 'Very Satisfied' },
-  { value: 4, label: 'Satisfied' },
-  { value: 3, label: 'Neutral' },
-  { value: 2, label: 'Dissatisfied' },
-  { value: 1, label: 'Very Dissatisfied' },
-];
-
 export default function ExperienceFeedbackForm({ 
   onNext, 
   onPrev, 
@@ -24,7 +16,8 @@ export default function ExperienceFeedbackForm({
   onChange 
 }: ExperienceFeedbackFormProps) {
   const { register, handleSubmit, formState: { errors } } = useForm({
-    defaultValues: formData
+    defaultValues: formData,
+    mode: 'onChange'
   });
 
   const onSubmit = (data: any) => {
@@ -33,131 +26,313 @@ export default function ExperienceFeedbackForm({
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
       <h2 className="text-xl font-semibold mb-4">Experience & Feedback</h2>
       
-      <div>
-        <h3 className="text-lg font-medium mb-3">Please rate your satisfaction with the following aspects:</h3>
+      {/* Career Growth */}
+      <div className="p-4 bg-gray-50 rounded-md">
+        <label className="block text-sm font-medium text-gray-700 mb-3">
+          How did you feel about the opportunity for career growth in the company?
+        </label>
         
-        <div className="space-y-4">
+        <div className="space-y-2">
           {[
-            { id: 'workEnvironment', label: 'Work Environment' },
-            { id: 'management', label: 'Management and Leadership' },
-            { id: 'compensation', label: 'Compensation and Benefits' },
-            { id: 'workLifeBalance', label: 'Work-Life Balance' },
-            { id: 'careerGrowth', label: 'Career Growth Opportunities' },
-            { id: 'jobSatisfaction', label: 'Overall Job Satisfaction' },
-          ].map((item) => (
-            <div key={item.id} className="grid grid-cols-1 gap-2 md:grid-cols-12 md:gap-4 items-center">
-              <div className="md:col-span-3">
-                <label htmlFor={item.id} className="block text-sm font-medium text-gray-700">
-                  {item.label}
-                </label>
+            { id: 'veryGoodChance', label: 'Very good chance' },
+            { id: 'goodChancesDepending', label: 'Good chances depending on performance' },
+            { id: 'littleChancesButHopeful', label: 'Little chances but still hopeful' },
+            { id: 'veryLittleChances', label: 'Very little chances' },
+            { id: 'noChances', label: 'No chances' }
+          ].map((option) => (
+            <div key={option.id} className="flex items-start">
+              <div className="flex items-center h-5">
+                <input
+                  id={`careerGrowth_${option.id}`}
+                  type="radio"
+                  value={option.id}
+                  {...register('careerGrowth', { required: 'This field is required' })}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                />
               </div>
-              <div className="md:col-span-9">
-                <div className="flex items-center space-x-2">
-                  {ratingOptions.map((option) => (
-                    <div key={option.value} className="flex flex-col items-center space-y-1">
-                      <input
-                        type="radio"
-                        id={`${item.id}_${option.value}`}
-                        value={option.value}
-                        {...register(item.id, { required: `Please rate ${item.label}` })}
-                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
-                      />
-                      <label 
-                        htmlFor={`${item.id}_${option.value}`} 
-                        className="text-xs text-gray-500"
-                      >
-                        {option.label}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-                {errors[item.id] && (
-                  <p className="mt-1 text-sm text-red-600">{errors[item.id]?.message as string}</p>
-                )}
+              <div className="ml-3 text-sm">
+                <label htmlFor={`careerGrowth_${option.id}`} className="font-medium text-gray-700">
+                  {option.label}
+                </label>
               </div>
             </div>
           ))}
         </div>
+        {errors.careerGrowth && (
+          <p className="mt-1 text-sm text-red-600">{errors.careerGrowth.message as string}</p>
+        )}
+        
+        <div className="mt-3">
+          <label htmlFor="careerGrowthComments" className="block text-sm font-medium text-gray-700">
+            Additional comments on career growth:
+          </label>
+          <textarea
+            id="careerGrowthComments"
+            rows={2}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+            placeholder="Optional comments..."
+            {...register('careerGrowthComments')}
+          />
+        </div>
       </div>
       
-      <div>
-        <label htmlFor="positiveFeedback" className="block text-sm font-medium text-gray-700">
-          What did you like most about working at our company?
+      {/* Pay Rate */}
+      <div className="p-4 bg-gray-50 rounded-md">
+        <label className="block text-sm font-medium text-gray-700 mb-3">
+          How did you feel about the pay rate?
         </label>
-        <textarea
-          id="positiveFeedback"
-          rows={3}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-          placeholder="Please share any positive aspects of your experience..."
-          {...register('positiveFeedback')}
-        />
+        
+        <div className="space-y-2">
+          {[
+            { id: 'veryCompensating', label: 'Very compensating' },
+            { id: 'fairEnough', label: 'Fair enough' },
+            { id: 'bitLowAcceptable', label: 'A bit low although acceptable' },
+            { id: 'notCommensurate', label: 'Not commensurate to job/load' },
+            { id: 'veryLow', label: 'Very low' }
+          ].map((option) => (
+            <div key={option.id} className="flex items-start">
+              <div className="flex items-center h-5">
+                <input
+                  id={`payRate_${option.id}`}
+                  type="radio"
+                  value={option.id}
+                  {...register('payRate', { required: 'This field is required' })}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                />
+              </div>
+              <div className="ml-3 text-sm">
+                <label htmlFor={`payRate_${option.id}`} className="font-medium text-gray-700">
+                  {option.label}
+                </label>
+              </div>
+            </div>
+          ))}
+        </div>
+        {errors.payRate && (
+          <p className="mt-1 text-sm text-red-600">{errors.payRate.message as string}</p>
+        )}
+        
+        <div className="mt-3">
+          <label htmlFor="payRateComments" className="block text-sm font-medium text-gray-700">
+            Additional comments on pay rate:
+          </label>
+          <textarea
+            id="payRateComments"
+            rows={2}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+            placeholder="Optional comments..."
+            {...register('payRateComments')}
+          />
+        </div>
       </div>
       
-      <div>
+      {/* Benefits */}
+      <div className="p-4 bg-gray-50 rounded-md">
+        <label className="block text-sm font-medium text-gray-700 mb-3">
+          How did you feel about the benefits (insurance, leave privileges, hospitalization, medical, others)?
+        </label>
+        
+        <div className="space-y-2">
+          {[
+            { id: 'veryAdequate', label: 'Very adequate' },
+            { id: 'adequate', label: 'Adequate' },
+            { id: 'inadequate', label: 'Inadequate' },
+            { id: 'ifAny', label: 'If any' }
+          ].map((option) => (
+            <div key={option.id} className="flex items-start">
+              <div className="flex items-center h-5">
+                <input
+                  id={`benefits_${option.id}`}
+                  type="radio"
+                  value={option.id}
+                  {...register('benefits', { required: 'This field is required' })}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                />
+              </div>
+              <div className="ml-3 text-sm">
+                <label htmlFor={`benefits_${option.id}`} className="font-medium text-gray-700">
+                  {option.label}
+                </label>
+              </div>
+            </div>
+          ))}
+        </div>
+        {errors.benefits && (
+          <p className="mt-1 text-sm text-red-600">{errors.benefits.message as string}</p>
+        )}
+        
+        <div className="mt-3">
+          <label htmlFor="benefitsComments" className="block text-sm font-medium text-gray-700">
+            Additional comments on benefits:
+          </label>
+          <textarea
+            id="benefitsComments"
+            rows={2}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+            placeholder="Optional comments..."
+            {...register('benefitsComments')}
+          />
+        </div>
+      </div>
+      
+      {/* Workload */}
+      <div className="p-4 bg-gray-50 rounded-md">
+        <label className="block text-sm font-medium text-gray-700 mb-3">
+          How did you feel about the amount of work you were expected to do?
+        </label>
+        
+        <div className="space-y-2">
+          {[
+            { id: 'minimalWork', label: 'Minimal work' },
+            { id: 'justEnoughLoad', label: 'Just enough load' },
+            { id: 'tooMuchWork', label: 'Too much work' }
+          ].map((option) => (
+            <div key={option.id} className="flex items-start">
+              <div className="flex items-center h-5">
+                <input
+                  id={`workload_${option.id}`}
+                  type="radio"
+                  value={option.id}
+                  {...register('workload', { required: 'This field is required' })}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                />
+              </div>
+              <div className="ml-3 text-sm">
+                <label htmlFor={`workload_${option.id}`} className="font-medium text-gray-700">
+                  {option.label}
+                </label>
+              </div>
+            </div>
+          ))}
+        </div>
+        {errors.workload && (
+          <p className="mt-1 text-sm text-red-600">{errors.workload.message as string}</p>
+        )}
+        
+        <div className="mt-3">
+          <label htmlFor="workloadComments" className="block text-sm font-medium text-gray-700">
+            Additional comments on workload:
+          </label>
+          <textarea
+            id="workloadComments"
+            rows={2}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+            placeholder="Optional comments..."
+            {...register('workloadComments')}
+          />
+        </div>
+      </div>
+      
+      {/* Recommendation */}
+      <div className="p-4 bg-gray-50 rounded-md">
+        <label className="block text-sm font-medium text-gray-700 mb-3">
+          Would you recommend TDK to a friend as a place to work?
+        </label>
+        
+        <div className="space-y-2">
+          {[
+            { id: 'yes', label: 'Yes' },
+            { id: 'no', label: 'No' }
+          ].map((option) => (
+            <div key={option.id} className="flex items-start">
+              <div className="flex items-center h-5">
+                <input
+                  id={`recommend_${option.id}`}
+                  type="radio"
+                  value={option.id}
+                  {...register('recommend', { required: 'This field is required' })}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                />
+              </div>
+              <div className="ml-3 text-sm">
+                <label htmlFor={`recommend_${option.id}`} className="font-medium text-gray-700">
+                  {option.label}
+                </label>
+              </div>
+            </div>
+          ))}
+        </div>
+        {errors.recommend && (
+          <p className="mt-1 text-sm text-red-600">{errors.recommend.message as string}</p>
+        )}
+        
+        <div className="mt-3">
+          <label htmlFor="recommendComments" className="block text-sm font-medium text-gray-700">
+            Additional comments on recommendation:
+          </label>
+          <textarea
+            id="recommendComments"
+            rows={2}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+            placeholder="Optional comments..."
+            {...register('recommendComments')}
+          />
+        </div>
+      </div>
+      
+      {/* Improvement Feedback */}
+      <div className="p-4 bg-gray-50 rounded-md">
         <label htmlFor="improvementFeedback" className="block text-sm font-medium text-gray-700">
-          What could be improved about working at our company?
+          Comments and suggestions on how we can improve the way we do things at TDK:
         </label>
         <textarea
           id="improvementFeedback"
-          rows={3}
+          rows={4}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
           placeholder="Please share any suggestions for improvement..."
           {...register('improvementFeedback')}
         />
       </div>
       
-      <div>
-        <label htmlFor="futureRecommendation" className="block text-sm font-medium text-gray-700 mb-2">
-          Would you recommend our company as a good place to work?
-        </label>
-        <div className="mt-1 space-x-4">
-          <label className="inline-flex items-center">
+      {/* DPA Consent */}
+      <div className="p-6 border-2 border-blue-100 bg-blue-50 rounded-md shadow-sm">
+        <div className="mb-3">
+          <h3 className="text-lg font-medium text-blue-800">Data Privacy Act (DPA) Consent</h3>
+          <p className="mt-2 text-sm text-gray-600 leading-relaxed">
+            By checking the box below, you acknowledge and consent to TDK:
+          </p>
+          <ul className="mt-2 list-disc list-inside text-sm text-gray-600 space-y-1 leading-relaxed">
+            <li>Collecting your personal information provided in this exit interview</li>
+            <li>Storing this information securely in compliance with data protection regulations</li>
+            <li>Processing and analyzing this information for HR analytics and improvement purposes</li>
+            <li>Using anonymized insights to enhance workplace policies and practices</li>
+          </ul>
+          <p className="mt-2 text-sm text-gray-600">
+            Your information will be kept confidential and will only be accessible to authorized HR personnel.
+          </p>
+        </div>
+        
+        <div className="mt-4 flex items-start p-3 border border-blue-200 rounded bg-white">
+          <div className="flex items-center h-5 mt-0.5">
             <input
-              type="radio"
-              value="yes"
-              {...register('wouldRecommend', { required: 'Please select an option' })}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+              id="dpaConsent"
+              type="checkbox"
+              className="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              {...register('dpaConsent', { 
+                required: 'You must agree to the Data Privacy Act consent to proceed' 
+              })}
             />
-            <span className="ml-2">Yes</span>
-          </label>
-          <label className="inline-flex items-center">
-            <input
-              type="radio"
-              value="maybe"
-              {...register('wouldRecommend', { required: 'Please select an option' })}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
-            />
-            <span className="ml-2">Maybe</span>
-          </label>
-          <label className="inline-flex items-center">
-            <input
-              type="radio"
-              value="no"
-              {...register('wouldRecommend', { required: 'Please select an option' })}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
-            />
-            <span className="ml-2">No</span>
+          </div>
+          <label htmlFor="dpaConsent" className="ml-3 text-sm font-medium text-gray-700">
+            I consent to TDK collecting, storing, and processing my personal information as described above.
           </label>
         </div>
-        {errors.wouldRecommend && (
-          <p className="mt-1 text-sm text-red-600">{errors.wouldRecommend.message as string}</p>
+        
+        {errors.dpaConsent && (
+          <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded">
+            <p className="text-sm text-red-600 font-medium">
+              {errors.dpaConsent.message as string}
+            </p>
+          </div>
         )}
-      </div>
-      
-      <div>
-        <label htmlFor="additionalFeedback" className="block text-sm font-medium text-gray-700">
-          Any other feedback or comments you'd like to share?
-        </label>
-        <textarea
-          id="additionalFeedback"
-          rows={4}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-          placeholder="Any additional thoughts or feedback..."
-          {...register('additionalFeedback')}
-        />
+        
+        <p className="mt-4 text-xs text-gray-500">
+          For more information about how TDK handles your personal data, please refer to our{' '}
+          <a href="#" className="text-blue-600 hover:underline">full Privacy Policy</a>.
+        </p>
       </div>
       
       <div className="flex justify-between">

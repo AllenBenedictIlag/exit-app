@@ -100,7 +100,7 @@ export const exitInterviewService = {
       
       // For now, return mock data
       const interviews = getMockExitInterviews();
-      const interview = interviews.find(i => i.id === id);
+      const interview = interviews.find(i => i.id === id.toString());
       if (!interview) {
         throw new Error('Interview not found');
       }
@@ -303,34 +303,103 @@ function getMockUsers(): User[] {
 function getMockExitInterviews(): ExitInterview[] {
   return [
     {
-      id: 1,
-      employeeId: 101,
-      interviewerId: 2,
-      interviewDate: new Date(),
-      status: 'completed',
-      submissionDate: new Date(),
-      lastWorkingDate: new Date(),
-      createdAt: new Date(),
-      updatedAt: new Date()
+      id: "1",
+      employeeId: "EMP101",
+      fullName: "John Doe",
+      department: "engineering",
+      businessUnit: "sensors",
+      position: "Software Engineer",
+      immediateSuperior: "Jane Smith",
+      lastWorkingDay: "2023-08-15",
+      submissionDate: "2023-07-15",
+      status: "submitted",
+      exitReasons: {
+        primaryReasons: {
+          anotherJobAbroad: true,
+          practiceProf: true
+        },
+        countryAbroad: "Singapore",
+        moreDesirable: {
+          careerAdvancement: true,
+          higherSalary: true
+        },
+        additionalComments: "Looking for more challenging projects in Singapore."
+      },
+      feedback: {
+        careerGrowth: "littleChancesButHopeful",
+        careerGrowthComments: "Limited opportunities in my specialized field.",
+        payRate: "bitLowAcceptable",
+        payRateComments: "Below market for my experience level.",
+        benefits: "adequate",
+        workload: "tooMuchWork",
+        workloadComments: "Often working evenings and weekends to meet deadlines.",
+        recommend: "yes",
+        recommendComments: "Great colleagues and learning experience.",
+        improvementFeedback: "More career development programs would be beneficial.",
+        dpaConsent: true
+      }
     },
     {
-      id: 2,
-      employeeId: 102,
-      interviewerId: 2,
-      interviewDate: new Date(),
-      status: 'reviewed',
-      submissionDate: new Date(),
-      lastWorkingDate: new Date(),
-      createdAt: new Date(),
-      updatedAt: new Date()
+      id: "2",
+      employeeId: "EMP102",
+      fullName: "Sarah Johnson",
+      department: "marketing",
+      businessUnit: "corporate",
+      position: "Marketing Specialist",
+      immediateSuperior: "Michael Brown",
+      lastWorkingDay: "2023-09-30",
+      submissionDate: "2023-08-30",
+      status: "reviewed",
+      exitReasons: {
+        primaryReasons: {
+          business: true,
+          personalReason: true
+        },
+        moreDesirable: {
+          workLifeBalance: true
+        },
+        additionalComments: "Starting my own marketing consultancy."
+      },
+      feedback: {
+        careerGrowth: "goodChancesDepending",
+        payRate: "fairEnough",
+        benefits: "veryAdequate",
+        benefitsComments: "Excellent health and retirement benefits.",
+        workload: "justEnoughLoad",
+        recommend: "yes",
+        improvementFeedback: "Better communication between departments would help.",
+        dpaConsent: true
+      }
     },
     {
-      id: 3,
-      employeeId: 103,
-      status: 'draft',
-      lastWorkingDate: new Date(),
-      createdAt: new Date(),
-      updatedAt: new Date()
+      id: "3",
+      employeeId: "EMP103",
+      fullName: "Robert Chen",
+      department: "operations",
+      businessUnit: "capacitors",
+      position: "Production Supervisor",
+      immediateSuperior: "Lisa Wong",
+      lastWorkingDay: "2023-10-15",
+      submissionDate: "2023-09-15",
+      status: "draft",
+      exitReasons: {
+        primaryReasons: {
+          diffSuperior: true,
+          dislikeCompanyProc: true
+        },
+        additionalComments: "Management style conflicts with my work approach."
+      },
+      feedback: {
+        careerGrowth: "veryLittleChances",
+        careerGrowthComments: "No clear path for advancement.",
+        payRate: "notCommensurate",
+        benefits: "adequate",
+        workload: "tooMuchWork",
+        workloadComments: "Understaffed department creates excessive workload.",
+        recommend: "no",
+        recommendComments: "High stress environment with little recognition.",
+        dpaConsent: true
+      }
     }
   ];
 }
@@ -354,11 +423,14 @@ function getMockMonthlyExitData(): MonthlyExitData[] {
 
 function getMockExitReasons(): ExitReasonData[] {
   return [
-    { name: 'Career Growth', value: 35 },
-    { name: 'Work-Life Balance', value: 25 },
-    { name: 'Compensation', value: 20 },
-    { name: 'Management', value: 15 },
-    { name: 'Other', value: 5 },
+    { name: 'Another Job', value: 28 },
+    { name: 'Business', value: 15 },
+    { name: 'Personal Reason', value: 18 },
+    { name: 'Continue to Study', value: 10 },
+    { name: 'Health', value: 8 },
+    { name: 'Family Reasons', value: 12 },
+    { name: 'Differences with Superior', value: 5 },
+    { name: 'Practice Profession', value: 4 }
   ];
 }
 

@@ -79,6 +79,28 @@ export default function PersonalInfoForm({ onNext, formData, onChange }: Persona
         </div>
         
         <div>
+          <label htmlFor="businessUnit" className="block text-sm font-medium text-gray-700">
+            Business Unit
+          </label>
+          <select
+            id="businessUnit"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+            {...register('businessUnit', { required: 'Business unit is required' })}
+          >
+            <option value="">Select Business Unit</option>
+            <option value="capacitors">Capacitors</option>
+            <option value="inductors">Inductors</option>
+            <option value="magnets">Magnets</option>
+            <option value="sensors">Sensors</option>
+            <option value="powerSupplies">Power Supplies</option>
+            <option value="corporate">Corporate</option>
+          </select>
+          {errors.businessUnit && (
+            <p className="mt-1 text-sm text-red-600">{errors.businessUnit.message as string}</p>
+          )}
+        </div>
+        
+        <div>
           <label htmlFor="position" className="block text-sm font-medium text-gray-700">
             Position
           </label>
@@ -95,33 +117,33 @@ export default function PersonalInfoForm({ onNext, formData, onChange }: Persona
         </div>
         
         <div>
-          <label htmlFor="managerName" className="block text-sm font-medium text-gray-700">
-            Manager Name
+          <label htmlFor="immediateSuperior" className="block text-sm font-medium text-gray-700">
+            Immediate Superior
           </label>
           <input
             type="text"
-            id="managerName"
+            id="immediateSuperior"
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
             placeholder="Jane Smith"
-            {...register('managerName', { required: 'Manager name is required' })}
+            {...register('immediateSuperior', { required: 'Immediate superior is required' })}
           />
-          {errors.managerName && (
-            <p className="mt-1 text-sm text-red-600">{errors.managerName.message as string}</p>
+          {errors.immediateSuperior && (
+            <p className="mt-1 text-sm text-red-600">{errors.immediateSuperior.message as string}</p>
           )}
         </div>
         
         <div>
-          <label htmlFor="lastWorkingDate" className="block text-sm font-medium text-gray-700">
-            Last Working Date
+          <label htmlFor="lastWorkingDay" className="block text-sm font-medium text-gray-700">
+            Last Working Day
           </label>
           <input
             type="date"
-            id="lastWorkingDate"
+            id="lastWorkingDay"
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-            {...register('lastWorkingDate', { required: 'Last working date is required' })}
+            {...register('lastWorkingDay', { required: 'Last working day is required' })}
           />
-          {errors.lastWorkingDate && (
-            <p className="mt-1 text-sm text-red-600">{errors.lastWorkingDate.message as string}</p>
+          {errors.lastWorkingDay && (
+            <p className="mt-1 text-sm text-red-600">{errors.lastWorkingDay.message as string}</p>
           )}
         </div>
       </div>

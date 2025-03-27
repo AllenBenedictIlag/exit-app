@@ -17,15 +17,38 @@ export interface User {
   
   // Exit Interview Types
   export interface ExitInterview {
-    id: number;
-    employeeId: number;
-    interviewerId?: number;
-    interviewDate?: Date;
-    status: InterviewStatus;
-    submissionDate?: Date;
-    lastWorkingDate: Date;
-    createdAt: Date;
-    updatedAt: Date;
+    id: string;
+    employeeId: string;
+    fullName: string;
+    department: string;
+    businessUnit: string;
+    position: string;
+    immediateSuperior: string; 
+    lastWorkingDay: string;
+    submissionDate: string;
+    status: 'draft' | 'submitted' | 'reviewed';
+    exitReasons: {
+      primaryReasons: Record<string, boolean>;
+      moreDesirable?: Record<string, boolean>;
+      otherDesirableReason?: string;
+      additionalComments?: string;
+      countryAbroad?: string;
+      otherCountry?: string;
+    };
+    feedback: {
+      careerGrowth: string;
+      careerGrowthComments?: string;
+      payRate: string;
+      payRateComments?: string;
+      benefits: string;
+      benefitsComments?: string;
+      workload: string;
+      workloadComments?: string;
+      recommend: string;
+      recommendComments?: string;
+      improvementFeedback?: string;
+      dpaConsent: boolean;
+    };
   }
   
   export type InterviewStatus = 'draft' | 'completed' | 'reviewed';
@@ -60,9 +83,37 @@ export interface User {
   }
   
   export interface ExitInterviewFormData {
-    personalInfo: PersonalInfo;
-    exitReasons: ExitReasons;
-    feedback: FeedbackData;
+    personalInfo: {
+      employeeId: string;
+      fullName: string;
+      department: string;
+      businessUnit: string;
+      position: string;
+      immediateSuperior: string;
+      lastWorkingDay: string;
+    };
+    exitReasons: {
+      primaryReasons: Record<string, boolean>;
+      moreDesirable?: Record<string, boolean>;
+      otherDesirableReason?: string;
+      additionalComments?: string;
+      countryAbroad?: string;
+      otherCountry?: string;
+    };
+    feedback: {
+      careerGrowth: string;
+      careerGrowthComments?: string;
+      payRate: string;
+      payRateComments?: string;
+      benefits: string;
+      benefitsComments?: string;
+      workload: string;
+      workloadComments?: string;
+      recommend: string;
+      recommendComments?: string;
+      improvementFeedback?: string;
+      dpaConsent: boolean;
+    };
   }
   
   // Report Types

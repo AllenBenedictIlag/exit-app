@@ -1,53 +1,103 @@
 'use client';
 
-import { 
-  PieChart, 
-  Pie, 
-  Cell, 
-  ResponsiveContainer, 
-  Tooltip, 
-  Legend 
-} from 'recharts';
+import { useEffect, useState } from 'react';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Pie } from 'react-chartjs-2';
 
-// Mock data
-const data = [
-  { name: 'Career Growth', value: 35 },
-  { name: 'Work-Life Balance', value: 25 },
-  { name: 'Compensation', value: 20 },
-  { name: 'Management', value: 15 },
-  { name: 'Other', value: 5 },
-];
+// Register Chart.js components
+ChartJS.register(ArcElement, Tooltip, Legend);
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#9146FF'];
+interface ExitReasonsPieChartProps {
+  data?: Record<string, number>;
+}
 
-const ExitReasonsPieChart = () => {
+export default function ExitReasonsPieChart({ data }: ExitReasonsPieChartProps) {
+  // State to ensure client-side rendering only
+  const [mounted, setMounted] = useState(false);
+
+  // Use provided data or fallback to default
+  const exitReasons = data || {
+    'Another Job (Abroad)': 5,
+    'Differences with Co-Employees': 5,
+    'Personal/Family Reasons': 3,
+    'Health': 2,
+    'Differences with Superior': 1,
+    'Continue to Study': 1,
+    'Business': 1,
+    'Practice Profession': 1,
+    'Dislike Company Procedure': 1
+  };
+
+  // Generate colors for the chart
+  const generateColors = (count: number) => {
+    const colors = [
+      '#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#9146FF',
+      '#8884d8', '#82ca9d', '#ffc658', '#a4de6c', '#d0ed57',
+      '#83a6ed', '#8dd1e1', '#b6a2de', '#6ab975', '#ff9f86'
+    ];
+    
+    return Array(count).fill(0).map((_, i) => colors[i % colors.length]);
+  };
+
+  const labels = Object.keys(exitReasons);
+  const values = Object.values(exitReasons);
+  const backgroundColors = generateColors(labels.length);
+
+  // Data for exit reasons
+  const chartData = {
+    labels: labels,
+    datasets: [
+      {
+        data: values,
+        backgroundColor: backgroundColors,
+        borderColor: backgroundColors,
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  // Chart.js options
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'bottom' as const,
+      },
+      tooltip: {
+        callbacks: {
+          label: function(context: any) {
+            const label = context.label || '';
+            const value = context.raw || 0;
+            return `${label}: ${value} employees`;
+          }
+        }
+      }
+    }
+  };
+
+  // Use effect to ensure client-side rendering only
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="h-80 w-full">
+        <h3 className="text-lg font-medium">Top Exit Reasons</h3>
+        <div className="mt-4 h-72 flex items-center justify-center bg-gray-50 rounded">
+          <p className="text-gray-400">Loading chart...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="h-80 w-full">
       <h3 className="text-lg font-medium">Top Exit Reasons</h3>
-      <div className="mt-4 h-72">
-        <ResponsiveContainer width="100%" height="100%">
-          <PieChart>
-            <Pie
-              data={data}
-              cx="50%"
-              cy="50%"
-              labelLine={false}
-              outerRadius={80}
-              fill="#8884d8"
-              dataKey="value"
-              label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-            >
-              {data.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Pie>
-            <Tooltip formatter={(value) => `${value}%`} />
-            <Legend />
-          </PieChart>
-        </ResponsiveContainer>
+      <div className="mt-4 h-72" style={{ position: 'relative' }}>
+        <Pie data={chartData} options={options} />
       </div>
     </div>
   );
-};
-
-export default ExitReasonsPieChart;
+}

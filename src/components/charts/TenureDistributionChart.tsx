@@ -5,26 +5,24 @@ import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  PointElement,
-  LineElement,
+  BarElement,
   Title,
   Tooltip,
   Legend,
 } from 'chart.js';
-import { Line } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 
 // Register Chart.js components
 ChartJS.register(
   CategoryScale,
   LinearScale,
-  PointElement,
-  LineElement,
+  BarElement,
   Title,
   Tooltip,
   Legend
 );
 
-export default function TrendLineChart() {
+export default function TenureDistributionChart() {
   // State to ensure client-side rendering only
   const [mounted, setMounted] = useState(false);
 
@@ -32,52 +30,40 @@ export default function TrendLineChart() {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
-    interaction: {
-      mode: 'index' as const,
-      intersect: false,
-    },
-    stacked: false,
     plugins: {
-      title: {
-        display: false,
+      legend: {
+        position: 'top' as const,
       },
       tooltip: {
         callbacks: {
           label: function(context: any) {
-            let label = context.dataset.label || '';
             let value = context.raw || 0;
-            return `${label}: ${value}`;
+            return `${value} employees`;
           }
         }
       }
     },
     scales: {
       y: {
-        type: 'linear' as const,
-        display: true,
-        position: 'left' as const,
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: 'Number of Employees'
+        }
       }
-    },
+    }
   };
 
-  // Data from the actual exit interviews by month
-  const labels = ['May 2023', 'June 2023', 'July 2023'];
-
+  const labels = ['<1 year', '1-2 years', '2-3 years', '3-5 years', '5-7 years', '7-10 years', '>10 years'];
+  
   const data = {
     labels,
     datasets: [
       {
-        label: 'Current Year',
-        data: [3, 11, 6],
-        borderColor: '#3b82f6',
+        label: 'Tenure Distribution',
+        data: [12, 18, 15, 9, 6, 4, 2],
         backgroundColor: 'rgba(59, 130, 246, 0.5)',
-      },
-      {
-        label: 'Previous Year (Estimated)',
-        data: [2, 8, 4],
-        borderColor: '#ef4444',
-        backgroundColor: 'rgba(239, 68, 68, 0.5)',
-      },
+      }
     ],
   };
 
@@ -89,7 +75,7 @@ export default function TrendLineChart() {
   if (!mounted) {
     return (
       <div className="w-full">
-        <h3 className="text-lg font-medium">Exit Trends Comparison</h3>
+        <h3 className="text-lg font-medium">Tenure Distribution of Exits</h3>
         <div className="mt-4 h-80 flex items-center justify-center bg-gray-50 rounded">
           <p className="text-gray-400">Loading chart...</p>
         </div>
@@ -99,10 +85,10 @@ export default function TrendLineChart() {
 
   return (
     <div className="w-full">
-      <h3 className="text-lg font-medium">Exit Trends Comparison</h3>
+      <h3 className="text-lg font-medium">Tenure Distribution of Exits</h3>
       <div className="mt-4 h-80" style={{ position: 'relative' }}>
-        <Line options={options} data={data} />
+        <Bar options={options} data={data} />
       </div>
     </div>
   );
-}
+} 
