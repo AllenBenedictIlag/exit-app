@@ -44,28 +44,10 @@ export default function ExitTrendChart({ period = 'T127' }: ExitTrendChartProps)
     stacked: false,
     plugins: {
       title: {
-        display: true,
-        text: 'Exit Trends Comparison',
-        font: {
-          size: 16,
-          weight: 'bold' as const
-        },
-        padding: {
-          top: 0,
-          bottom: 0
-        }
+        display: false,
       },
       subtitle: {
-        display: true,
-        text: `Time Period: ${period}`,
-        padding: {
-          bottom: 10
-        },
-        font: {
-          size: 14,
-          style: 'italic' as const,
-        },
-        color: '#666'
+        display: false,
       },
       legend: {
         position: 'top' as const,
@@ -199,6 +181,7 @@ export default function ExitTrendChart({ period = 'T127' }: ExitTrendChartProps)
 
   return (
     <div className="w-full">
+      <h3 className="text-lg font-medium">Exit Trends Comparison</h3>
       <div className="mt-4 h-80" style={{ position: 'relative' }}>
         <Line options={options} data={chartData} />
       </div>
