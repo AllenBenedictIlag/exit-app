@@ -1,16 +1,20 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ExitReasonsPieChart from '@/components/charts/ExitReasonsPieChart';
 import DepartmentExitChart from '@/components/charts/DepartmentExitChart';
 import TrendLineChart from '@/components/charts/TrendLineChart';
 import ExitsByBusinessUnit from '@/components/charts/ExitsByBusinessUnit';
 import RecommendationRatings from '@/components/charts/RecommendationRatings';
 import WorkloadPerception from '@/components/charts/WorkloadPerception';
+import CareerGrowthChart from '@/components/charts/CareerGrowthChart';
+import PayRateChart from '@/components/charts/PayRateChart';
+import BenefitsChart from '@/components/charts/BenefitsChart';
 import { Download, Filter } from 'lucide-react';
+import { TIME_PERIODS, getCurrentTimePeriod } from '@/utils/timeFrames';
 
 export default function ReportsPage() {
-  const [dateRange, setDateRange] = useState('year');
+  const [timePeriod, setTimePeriod] = useState<string>(getCurrentTimePeriod().id);
   const [department, setDepartment] = useState('all');
   
   return (
@@ -32,19 +36,20 @@ export default function ReportsPage() {
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="card p-4">
-          <label htmlFor="date-range" className="block text-sm font-medium text-gray-700 mb-1">
-            Date Range
+          <label htmlFor="time-period" className="block text-sm font-medium text-gray-700 mb-1">
+            Time Period
           </label>
           <select
-            id="date-range"
+            id="time-period"
             className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-            value={dateRange}
-            onChange={(e) => setDateRange(e.target.value)}
+            value={timePeriod}
+            onChange={(e) => setTimePeriod(e.target.value)}
           >
-            <option value="month">This Month</option>
-            <option value="quarter">This Quarter</option>
-            <option value="year">This Year</option>
-            <option value="custom">Custom Range</option>
+            {TIME_PERIODS.map(period => (
+              <option key={period.id} value={period.id}>
+                {period.name} ({period.description})
+              </option>
+            ))}
           </select>
         </div>
         
@@ -72,41 +77,71 @@ export default function ReportsPage() {
         <div className="card p-4 bg-gray-50">
           <div className="text-xs text-gray-500 uppercase font-semibold mb-1">Total Exits</div>
           <div className="text-3xl font-bold">
-            147
-            <span className="text-sm font-normal text-red-600 ml-2">+12% vs previous period</span>
+            {timePeriod === 'T125' ? 47 : 
+             timePeriod === 'T126' ? 47 : 
+             timePeriod === 'T127' ? 46 : 
+             timePeriod === 'T128' ? 47 : 47}
+            <span className="text-sm font-normal text-red-600 ml-2">
+              {timePeriod === 'T125' ? '+5%' : 
+               timePeriod === 'T126' ? '+3%' : 
+               timePeriod === 'T127' ? '-2%' : 
+               timePeriod === 'T128' ? '+4%' : '+6%'} vs previous period
+            </span>
           </div>
           <div className="text-xs text-gray-500 mt-2">
-            Exit rate: 8.2% of total workforce
+            Exit rate: {
+              timePeriod === 'T125' ? '7.8%' : 
+              timePeriod === 'T126' ? '7.5%' : 
+              timePeriod === 'T127' ? '7.3%' : 
+              timePeriod === 'T128' ? '7.6%' : '8.2%'
+            } of total workforce
           </div>
         </div>
       </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="card p-6">
-          <ExitReasonsPieChart />
+        <div className="card p-6 shadow-sm rounded-lg bg-white">
+          <ExitReasonsPieChart timePeriod={timePeriod} />
         </div>
-        <div className="card p-6">
-          <DepartmentExitChart />
+        <div className="card p-6 shadow-sm rounded-lg bg-white">
+          <DepartmentExitChart timePeriod={timePeriod} />
         </div>
       </div>
       
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="card p-6">
-          <ExitsByBusinessUnit />
+      <div className="pt-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="card p-6 shadow-sm rounded-lg bg-white">
+            <CareerGrowthChart timePeriod={timePeriod} />
+          </div>
+          <div className="card p-6 shadow-sm rounded-lg bg-white">
+            <PayRateChart timePeriod={timePeriod} />
+          </div>
         </div>
-        <div className="card p-6">
-          <RecommendationRatings />
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+          <div className="card p-6 shadow-sm rounded-lg bg-white">
+            <BenefitsChart timePeriod={timePeriod} />
+          </div>
+          <div className="card p-6 shadow-sm rounded-lg bg-white">
+            <WorkloadPerception timePeriod={timePeriod} />
+          </div>
         </div>
-        <div className="card p-6">
-          <WorkloadPerception />
+      </div>
+      
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="card p-6 shadow-sm rounded-lg bg-white">
+          <ExitsByBusinessUnit timePeriod={timePeriod} />
+        </div>
+        <div className="card p-6 shadow-sm rounded-lg bg-white">
+          <RecommendationRatings timePeriod={timePeriod} />
         </div>
       </div>
 
-      <div className="card p-6">
+      <div className="card p-6 shadow-sm rounded-lg bg-white">
         <TrendLineChart />
       </div>
       
-      <div className="card">
+      <div className="card shadow-sm rounded-lg bg-white">
         <h3 className="text-lg font-medium mb-4 p-6 pb-0">Exit Interview Insights</h3>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
@@ -130,32 +165,55 @@ export default function ReportsPage() {
               {[
                 { 
                   category: 'Work Environment', 
-                  rating: 3.8, 
-                  trend: 'up', 
+                  rating: timePeriod === 'T125' ? 3.4 :
+                          timePeriod === 'T126' ? 3.5 :
+                          timePeriod === 'T127' ? 3.6 :
+                          timePeriod === 'T128' ? 3.7 : 3.8, 
+                  trend: timePeriod === 'T129' ? 'up' : 
+                         timePeriod === 'T128' ? 'up' : 'stable', 
                   feedback: 'Good team culture but office facilities need improvement' 
                 },
                 { 
                   category: 'Management', 
-                  rating: 3.2, 
-                  trend: 'down', 
+                  rating: timePeriod === 'T125' ? 2.9 :
+                          timePeriod === 'T126' ? 3.0 :
+                          timePeriod === 'T127' ? 3.1 :
+                          timePeriod === 'T128' ? 3.1 : 3.2, 
+                  trend: timePeriod === 'T129' ? 'up' : 
+                         timePeriod === 'T128' ? 'stable' : 'down', 
                   feedback: 'Lack of clear communication from leadership' 
                 },
                 { 
                   category: 'Compensation', 
-                  rating: 2.9, 
-                  trend: 'down', 
+                  rating: timePeriod === 'T125' ? 2.5 :
+                          timePeriod === 'T126' ? 2.6 :
+                          timePeriod === 'T127' ? 2.7 :
+                          timePeriod === 'T128' ? 2.8 : 2.9, 
+                  trend: timePeriod === 'T125' ? 'down' : 
+                         timePeriod === 'T126' ? 'down' : 
+                         timePeriod === 'T127' ? 'stable' : 'up', 
                   feedback: 'Below market rates, insufficient benefits package' 
                 },
                 { 
                   category: 'Work-Life Balance', 
-                  rating: 3.1, 
-                  trend: 'stable', 
+                  rating: timePeriod === 'T125' ? 2.8 :
+                          timePeriod === 'T126' ? 2.9 :
+                          timePeriod === 'T127' ? 3.0 :
+                          timePeriod === 'T128' ? 3.0 : 3.1, 
+                  trend: timePeriod === 'T125' ? 'down' : 
+                         timePeriod === 'T126' ? 'stable' : 
+                         timePeriod === 'T127' ? 'up' : 'stable', 
                   feedback: 'Long working hours, limited flexibility' 
                 },
                 { 
                   category: 'Career Growth', 
-                  rating: 2.7, 
-                  trend: 'down', 
+                  rating: timePeriod === 'T125' ? 2.3 :
+                          timePeriod === 'T126' ? 2.4 :
+                          timePeriod === 'T127' ? 2.5 :
+                          timePeriod === 'T128' ? 2.6 : 2.7, 
+                  trend: timePeriod === 'T125' ? 'down' : 
+                         timePeriod === 'T126' ? 'down' : 
+                         timePeriod === 'T127' ? 'stable' : 'up', 
                   feedback: 'Limited promotion opportunities, unclear career paths' 
                 },
               ].map((item, index) => (
