@@ -50,8 +50,8 @@ export default function ExitReasonsPieChart({ data }: ExitReasonsPieChartProps) 
       {
         data: values,
         backgroundColor: backgroundColors,
-        borderColor: backgroundColors,
-        borderWidth: 1,
+        borderColor: 'white',
+        borderWidth: 2,
       },
     ],
   };
@@ -63,6 +63,10 @@ export default function ExitReasonsPieChart({ data }: ExitReasonsPieChartProps) 
     plugins: {
       legend: {
         position: 'bottom' as const,
+        labels: {
+          padding: 30, // Add more padding between legend items
+          boxWidth: 15, // Make legend color boxes smaller
+        },
       },
       tooltip: {
         callbacks: {
@@ -72,6 +76,11 @@ export default function ExitReasonsPieChart({ data }: ExitReasonsPieChartProps) 
             return `${label}: ${value} employees`;
           }
         }
+      }
+    },
+    layout: {
+      padding: {
+        bottom: -10 // Add padding at the bottom of the chart
       }
     }
   };
@@ -83,9 +92,9 @@ export default function ExitReasonsPieChart({ data }: ExitReasonsPieChartProps) 
 
   if (!mounted) {
     return (
-      <div className="h-80 w-full">
+      <div className="h-96 w-full">
         <h3 className="text-lg font-medium">Top Exit Reasons</h3>
-        <div className="mt-4 h-72 flex items-center justify-center bg-gray-50 rounded">
+        <div className="mt-4 h-80 flex items-center justify-center bg-gray-50 rounded">
           <p className="text-gray-400">Loading chart...</p>
         </div>
       </div>
@@ -93,9 +102,9 @@ export default function ExitReasonsPieChart({ data }: ExitReasonsPieChartProps) 
   }
 
   return (
-    <div className="h-80 w-full">
+    <div className="h-96 w-full">
       <h3 className="text-lg font-medium">Top Exit Reasons</h3>
-      <div className="mt-4 h-72" style={{ position: 'relative' }}>
+      <div className="mt-4 h-80" style={{ position: 'relative' }}>
         <Pie data={chartData} options={options} />
       </div>
     </div>

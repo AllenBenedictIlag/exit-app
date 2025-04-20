@@ -16,7 +16,7 @@ ChartJS.register(
   Legend
 );
 
-export default function RecommendationRatings() {
+export default function BenefitsChart() {
   // State to ensure client-side rendering only
   const [mounted, setMounted] = useState(false);
 
@@ -28,8 +28,8 @@ export default function RecommendationRatings() {
       legend: {
         position: 'bottom' as const,
         labels: {
-          padding: 20, // Add more padding between legend items
-          boxWidth: 15, // Make legend color boxes smaller
+          padding: 20,
+          boxWidth: 15,
         },
       },
       tooltip: {
@@ -46,22 +46,24 @@ export default function RecommendationRatings() {
     },
     layout: {
       padding: {
-        bottom: 10 // Add padding at the bottom of the chart
+        bottom: 10
       }
     }
   };
 
-  // From the data provided, count the yes/no recommendations
-  const yesCount = 15; // Yes, would recommend TDK
-  const noCount = 5;   // No, would not recommend TDK
-
+  // Sample data for benefits perception
   const data = {
-    labels: ['Would Recommend', 'Would Not Recommend'],
+    labels: [
+      'Very adequate', 
+      'Adequate', 
+      'Inadequate'
+    ],
     datasets: [
       {
-        data: [yesCount, noCount],
+        data: [18, 35, 17],
         backgroundColor: [
           'rgba(75, 192, 192, 0.6)',
+          'rgba(54, 162, 235, 0.6)',
           'rgba(255, 99, 132, 0.6)',
         ],
         borderColor: 'white',
@@ -78,7 +80,7 @@ export default function RecommendationRatings() {
   if (!mounted) {
     return (
       <div className="w-full">
-        <h3 className="text-lg font-medium">Recommendation Ratings</h3>
+        <h3 className="text-lg font-medium">Benefits Assessment</h3>
         <div className="mt-4 h-80 flex items-center justify-center bg-gray-50 rounded">
           <p className="text-gray-400">Loading chart...</p>
         </div>
@@ -88,8 +90,8 @@ export default function RecommendationRatings() {
 
   return (
     <div className="w-full">
-      <h3 className="text-lg font-medium">Recommendation Ratings</h3>
-      <p className="text-sm text-gray-500">Would you recommend TDK to a friend as a place to work?</p>
+      <h3 className="text-lg font-medium">Benefits Assessment</h3>
+      <p className="text-sm text-gray-500">How did exiting employees rate their benefits package?</p>
       <div className="mt-4 h-80" style={{ position: 'relative' }}>
         <Doughnut options={options} data={data} />
       </div>

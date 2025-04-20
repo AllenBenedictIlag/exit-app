@@ -86,10 +86,6 @@ export default function Dashboard() {
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="card">
-          <div className="mb-2 text-sm text-gray-500">
-            <span className="font-medium">Note:</span> This chart displays exit trends for the selected time period ({selectedPeriod}).
-            Try changing the time period selector above to see how the data changes.
-          </div>
           <ExitTrendChart period={selectedPeriod} key={`trend-${selectedPeriod}`} />
         </div>
         <div className="card">

@@ -7,7 +7,7 @@ import {
   Tooltip,
   Legend
 } from 'chart.js';
-import { Doughnut } from 'react-chartjs-2';
+import { Pie } from 'react-chartjs-2';
 
 // Register Chart.js components
 ChartJS.register(
@@ -16,7 +16,7 @@ ChartJS.register(
   Legend
 );
 
-export default function RecommendationRatings() {
+export default function PayRateChart() {
   // State to ensure client-side rendering only
   const [mounted, setMounted] = useState(false);
 
@@ -28,8 +28,8 @@ export default function RecommendationRatings() {
       legend: {
         position: 'bottom' as const,
         labels: {
-          padding: 20, // Add more padding between legend items
-          boxWidth: 15, // Make legend color boxes smaller
+          padding: 20,
+          boxWidth: 15,
         },
       },
       tooltip: {
@@ -46,22 +46,26 @@ export default function RecommendationRatings() {
     },
     layout: {
       padding: {
-        bottom: 10 // Add padding at the bottom of the chart
+        bottom: 10
       }
     }
   };
 
-  // From the data provided, count the yes/no recommendations
-  const yesCount = 15; // Yes, would recommend TDK
-  const noCount = 5;   // No, would not recommend TDK
-
+  // Sample data for pay rate perception
   const data = {
-    labels: ['Would Recommend', 'Would Not Recommend'],
+    labels: [
+      'Very compensating', 
+      'Fair Enough', 
+      'A bit low although acceptable', 
+      'Very low, not commensurate to job/load'
+    ],
     datasets: [
       {
-        data: [yesCount, noCount],
+        data: [12, 25, 30, 13],
         backgroundColor: [
           'rgba(75, 192, 192, 0.6)',
+          'rgba(54, 162, 235, 0.6)',
+          'rgba(255, 206, 86, 0.6)',
           'rgba(255, 99, 132, 0.6)',
         ],
         borderColor: 'white',
@@ -78,7 +82,7 @@ export default function RecommendationRatings() {
   if (!mounted) {
     return (
       <div className="w-full">
-        <h3 className="text-lg font-medium">Recommendation Ratings</h3>
+        <h3 className="text-lg font-medium">Pay Rate Satisfaction</h3>
         <div className="mt-4 h-80 flex items-center justify-center bg-gray-50 rounded">
           <p className="text-gray-400">Loading chart...</p>
         </div>
@@ -88,10 +92,10 @@ export default function RecommendationRatings() {
 
   return (
     <div className="w-full">
-      <h3 className="text-lg font-medium">Recommendation Ratings</h3>
-      <p className="text-sm text-gray-500">Would you recommend TDK to a friend as a place to work?</p>
+      <h3 className="text-lg font-medium">Pay Rate Satisfaction</h3>
+      <p className="text-sm text-gray-500">How did exiting employees perceive their compensation?</p>
       <div className="mt-4 h-80" style={{ position: 'relative' }}>
-        <Doughnut options={options} data={data} />
+        <Pie options={options} data={data} />
       </div>
     </div>
   );

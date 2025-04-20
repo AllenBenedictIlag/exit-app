@@ -27,6 +27,10 @@ export default function WorkloadPerception() {
     plugins: {
       legend: {
         position: 'bottom' as const,
+        labels: {
+          padding: 20,
+          boxWidth: 15,
+        },
       },
       tooltip: {
         callbacks: {
@@ -40,6 +44,11 @@ export default function WorkloadPerception() {
         }
       }
     },
+    layout: {
+      padding: {
+        bottom: 10
+      }
+    }
   };
 
   // From the data provided, count the workload perceptions
@@ -53,12 +62,8 @@ export default function WorkloadPerception() {
           'rgba(54, 162, 235, 0.6)',
           'rgba(75, 192, 192, 0.6)',
         ],
-        borderColor: [
-          'rgba(255, 99, 132, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(75, 192, 192, 1)',
-        ],
-        borderWidth: 1,
+        borderColor: 'white',
+        borderWidth: 2,
       },
     ],
   };
@@ -83,7 +88,7 @@ export default function WorkloadPerception() {
     <div className="w-full">
       <h3 className="text-lg font-medium">Workload Perception</h3>
       <p className="text-sm text-gray-500">How did you feel about the amount of work you were expected to do?</p>
-      <div className="mt-4 h-72" style={{ position: 'relative' }}>
+      <div className="mt-4 h-80" style={{ position: 'relative' }}>
         <Pie options={options} data={data} />
       </div>
     </div>
