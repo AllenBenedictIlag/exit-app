@@ -93,7 +93,7 @@ export default function ForgotPassword() {
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
+       
       // In a real app, you would call an API to send a verification code
       setSuccess('Verification code sent to your email');
       setStage('verification');

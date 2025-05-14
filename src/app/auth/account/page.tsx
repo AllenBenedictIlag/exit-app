@@ -11,8 +11,10 @@ import {
 } from 'lucide-react';
 
 interface LoginFormData {
-  email: string;
-  password: string;
+    fullName: string;          // NEW
+    email: string;
+    password: string;
+    confirmPassword: string;   // NEW
 }
 
 export default function AuthPage() {
@@ -23,7 +25,7 @@ export default function AuthPage() {
   const [error,     setError]       = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [mounted, setMounted]       = useState(false);
-  const { register, handleSubmit, formState: { errors } } =
+  const { register, handleSubmit, watch, formState: { errors } } =
   useForm<LoginFormData>({ mode: 'onChange' });
 
   /* avoid hydration flash */
@@ -35,21 +37,7 @@ export default function AuthPage() {
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
     setError('');
-
-    try {
-      /* TODO: replace with real API call */
-      await new Promise(res => setTimeout(res, 1000));
-
-      if (data.email === 'employee@example.com' && data.password === 'password') {
-        router.push('/dashboard');                // 🔗 single destination
-      } else {
-        setError('Invalid credentials. Try employee@example.com / password');
-      }
-    } catch (err: any) {
-      setError(err.message || 'Authentication failed. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
+    
   };
 
   return (
@@ -60,7 +48,7 @@ export default function AuthPage() {
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-indigo-500/5 rounded-full translate-y-1/3 blur-3xl" />
       </div>
 
-      <div className="relative z-10 max-w-6xl mx-auto h-screen flex flex-col px-4 sm:px-6">
+      <div className="relative z-10 max-w-6xl mx-auto min-h-screen flex flex-col px-4 sm:px-6">
         {/* back-to-home */}
         <div className="pt-8">
           <Link href="/" className="text-gray-500 hover:text-gray-700 inline-flex items-center group">
@@ -71,64 +59,15 @@ export default function AuthPage() {
 
         {/* main card */}
         <div className="flex-1 flex items-center justify-center">
-          <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-            {/* left blurb */}
-            <div className="space-y-6">
-              <div className="flex justify-center md:justify-start">
-                <div className="inline-flex w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-white items-center justify-center">
-                  <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 8V16M8 12H16M22 12C22 17.523 17.523 22 12 22S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10Z"
-                          stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </div>
-              </div>
+          <div className="w-full max-w-md">
+         
 
-              <div className="text-center md:text-left">
-                <h1 className="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight">Welcome Back</h1>
-                <p className="text-xl text-gray-600 mt-4 max-w-md">
-                  Sign in to the Exit Interview System
-                </p>
-              </div>
-
-              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-blue-100/50 shadow-sm hidden md:block">
-                <div className="flex gap-4">
-                  <div className="bg-blue-100/50 rounded-full p-3 mt-1">
-                    <svg className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                            d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-medium text-gray-900">Your feedback matters</h3>
-                    <p className="text-gray-600 mt-1 text-sm">
-                      The exit interview process helps us improve workplace experience.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="hidden md:block">
-                <div className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800">
-                  <ExternalLink size={14} className="mr-1" />
-                  <span>Support Resources</span>
-                </div>
-                <p className="text-center text-sm text-gray-500 mt-2">
-                  Your session is protected with enterprise-grade encryption
-                </p>
-              </div>
-            </div>
-     
             {/* right form */}
             <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
               <div className="p-6">
                 <div className="text-center mb-6">
-                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-blue-100 mb-4">
-                    <UserCircle2 className="h-7 w-7 text-blue-600" />
-                  </div>
                   <h2 className="text-2xl font-bold text-gray-900">Sign In</h2>
-                  <p className="text-gray-500 mt-1 text-sm">
-                    Complete your exit interview or revisit past responses
-                  </p>
+                  
                 </div>
 
                 {error && (
@@ -138,7 +77,47 @@ export default function AuthPage() {
                   </div>
                 )}
 
+
+               
                 <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
+
+                 {/* Full Name    */}
+                <div className="space-y-1">
+                    <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
+                      Full Name
+                    </label>
+                    <div className="relative rounded-lg shadow-sm">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                        <UserCircle2 size={18} />
+                      </div>
+                      <input
+                        id="full-name"
+                        type="text"
+                        placeholder="Your full name"
+                        {...register('fullName', {
+                          required: 'Full name is required',
+                        })}
+                        className={`block w-full pl-10 pr-3 py-3 rounded-lg border ${
+                          errors.fullName
+                            ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
+                            : 'border-gray-200 focus:ring-blue-500 focus:border-blue-500'
+                        } shadow-sm sm:text-sm transition-colors`}
+                      />
+                      {!errors.fullName && (
+                        <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                          <CheckCircle className="h-5 w-5 text-green-500 opacity-0 transition-opacity data-[valid=true]:opacity-100"
+                                       data-valid={!!register('fullName').name} />
+                        </div>
+                      )}
+                    </div>
+                    {errors.fullName && (
+                      <p className="mt-1 text-sm text-red-600 flex items-center">
+                        <AlertCircle size={14} className="mr-1" /> {errors.fullName.message}
+                      </p>
+                    )}
+                  </div>
+
+
                   {/* email */}
                   <div className="space-y-1">
                     <label htmlFor="email" className="block text-sm font-medium text-gray-700">
@@ -185,13 +164,7 @@ export default function AuthPage() {
                       <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                         Password
                       </label>
-                      <Link 
-                          href="/auth/forgot-password" 
-                          className={`text-xs font-medium ${'text-blue-600 hover:text-blue-800' 
-                          } transition-colors`}
-                        >
-                          Forgot password?
-                        </Link>
+                      
                       </div>
                     
                     <div className="relative rounded-lg shadow-sm">
@@ -215,7 +188,7 @@ export default function AuthPage() {
                         className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
                         aria-label={showPassword ? 'Hide password' : 'Show password'}
                       >
-                        {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                        {showPassword ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
                       </button>
                     </div>
                     {errors.password && (
@@ -225,17 +198,45 @@ export default function AuthPage() {
                     )}
                   </div>
 
-                  {/* remember me */}
-                  <div className="flex items-center">
-                    <input
-                      id="remember-me"
-                      type="checkbox"
-                      className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    />
-                    <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-600">
-                      Remember me for 30 days
-                    </label>
+
+                    {/* verifypassword */}
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between">
+                      <label htmlFor="verifypassword" className="block text-sm font-medium text-gray-700">
+                        Verify Password
+                      </label>
+                      
+                      </div>
+                    
+                    <div className="relative rounded-lg shadow-sm">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                        <Lock size={18} />
+                      </div>
+                      <input
+                        id="confirmPassword"
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="Re-enter password"
+                        {...register('confirmPassword', {
+                            required: 'Please re-enter your password',
+                            validate: value => 
+                                value === watch('password') || 'Passwords do not match',
+                        })}
+
+                        className={`block w-full pl-10 pr-10 py-3 rounded-lg border ${
+                          errors.confirmPassword
+                            ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
+                            : 'border-gray-200 focus:ring-blue-500 focus:border-blue-500'
+                        } shadow-sm sm:text-sm transition-colors`}
+                      />
+                      
+                    </div>
+                    {errors.confirmPassword  && (
+                      <p className="mt-1 text-sm text-red-600 flex items-center">
+                        <AlertCircle size={14} className="mr-1" /> {errors.confirmPassword .message}
+                      </p>
+                    )}
                   </div>
+                 
 
                   {/* submit */}
                   <button
@@ -256,37 +257,18 @@ export default function AuthPage() {
                       'Sign in to continue'
                     )}
                   </button>
-
-                  {/* mobile support */}
-                  <div className="text-center text-sm text-gray-500 mt-4 md:hidden">
-                    Don’t have an account? Contact your HR department.
-                    <div className="mt-2 flex justify-center">
-                      <div className="inline-flex items-center text-sm text-blue-600">
-                        <ExternalLink size={14} className="mr-1" />
-                        <span>Support Resources</span>
-                      </div>
-                    </div>
-                  </div>
+                 
                 </form>
                
 
                 <p className="text-center text-sm mt-4">
-                Don’t have an account?{' '}
-                <a href="/auth/account" className="text-blue-600 hover:underline">Create one</a>
+                Already have an account?{' '}
+                <a href="/auth" className="text-blue-600 hover:underline">Log in</a>
               </p>
               </div>
               
 
-              {/* footer */}
-              <div className="px-6 py-3 bg-gray-50 border-t border-gray-100 text-center">
-                <p className="text-xs text-gray-500 flex items-center justify-center">
-                  <svg className="h-4 w-4 text-green-500 mr-1" viewBox="0 0 24 24" fill="none">
-                    <path d="M9 12L11 14L15 10M21 12c0 4.971-4.029 9-9 9s-9-4.029-9-9 4.029-9 9-9 9 4.029 9 9Z"
-                          stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                  Your session is protected with enterprise-grade encryption
-                </p>
-              </div>
+              
               
             </div>
           </div>
