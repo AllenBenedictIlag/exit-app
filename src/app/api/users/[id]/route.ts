@@ -1,4 +1,4 @@
-
+// app/api/users/[id]/route.ts
 import { NextResponse } from 'next/server';
 import { getPool } from '@/utils/db';
 
@@ -15,7 +15,7 @@ export async function GET(                // R = Read one
   return NextResponse.json((rows as any)[0]);
 }
 
-export async function PUT(                // U = Update (replace)
+export async function PUT(                // U = Update (replace all)
   req: Request,
   { params }: { params: { id: string } },
 ) {
@@ -46,7 +46,9 @@ export async function DELETE(             // D = Delete
   await pool.execute('DELETE FROM users WHERE id=?', [params.id]);
   return NextResponse.json({ id: params.id });
 }
-export async function PATCH(
+
+
+export async function PATCH(                // U = Update (replace specific)
   req: Request,
   { params }: { params: { id: string } },
 ) {
